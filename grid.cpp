@@ -14,6 +14,12 @@
 
 #include "grid.h"
 
+/** 
+ * Grid constructor
+ * 
+ * @param int width
+ * @param int height
+ */
 Grid::Grid(int width, int height)
 {
     int count = 0;
@@ -36,6 +42,9 @@ Grid::Grid(int width, int height)
 
 }
 
+/** 
+ * Grid destructor.
+ */
 Grid::~Grid()
 {
     for (int i = 0; i < this->environmentField->size(); i++)
@@ -59,27 +68,65 @@ Grid::~Grid()
     delete this->termiteField;
 }
 
+/** 
+ * Get state of environment state of cell.
+ * 
+ * @param int x
+ * @param int y
+ * @return CellEnvironmentState
+ */
 CellEnvironmentState Grid::getEnvironmentState(int x, int y)
 {
     return (CellEnvironmentState) (this->environmentField->at(x)->at(y)->getState());
 }
 
+/** 
+ * Get state of termite state of cell.
+ * 
+ * @param int x
+ * @param int y
+ * @return CellTermiteState
+ */
 CellTermiteState Grid::getTermiteState(int x, int y)
 {
     return (CellTermiteState) (this->termiteField->at(x)->at(y)->getState());
 }
 
+/** 
+ * Set state of environment state of cell.
+ * 
+ * @param CellEnvironmentState state
+ * @param int x
+ * @param int y
+ * @throws InvalidCellType
+ * @throws InvalidCellState
+ */
 void Grid::setEnvironmentState(CellEnvironmentState state, int x, int y)
 {
     this->environmentField->at(x)->at(y)->setState(state);
 }
 
+/** 
+ * Set state of termite state of cell.
+ * 
+ * @param CellTermiteState state
+ * @param int x
+ * @param int y
+ * @throws InvalidCellType
+ * @throws InvalidCellState
+ */
 void Grid::setTermiteState(CellTermiteState state, int x, int y)
 {
     this->termiteField->at(x)->at(y)->setState(state);
 }
 
-double Grid::getTermiteNeighborhood(int x, int y)
+/** 
+ * Get NeighbourhoodValue.
+ * 
+ * @param int x
+ * @param int y
+ */
+double Grid::getTermiteNeighborhoodValue(int x, int y)
 {
     // zlozity vypocet okolia
     return 45 * 0.1 + 17;

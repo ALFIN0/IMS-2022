@@ -14,6 +14,12 @@
 
 #include "cell.h"
 
+/** 
+ * Cell constructor
+ * 
+ * @param CellType type
+ * @throws InvalidCellType
+ */
 Cell::Cell(CellType type)
 {
     this->type = type;
@@ -26,16 +32,33 @@ Cell::Cell(CellType type)
     }
 }
 
+/** 
+ * Type of cell getter.
+ * 
+ * @return int
+ */
 int Cell::getType()
 {
     return this->type;
 }
 
+/** 
+ * State of cell getter.
+ * 
+ * @return int
+ */
 int Cell::getState()
 {
     return this->state;
 }
 
+/** 
+ * Setter of cell state.
+ * 
+ * @param int state
+ * @throws InvalidCellType
+ * @throws InvalidCellState
+ */
 void Cell::setState(int state)
 {
     if (this->type == CellType::ENVIRONMENT) {
@@ -61,6 +84,12 @@ void Cell::setState(int state)
     
 }
 
+/** 
+ * Setter of cell type.
+ * 
+ * @param int type
+ * @throws InvalidCellType
+ */
 void Cell::setType(CellType type)
 {
     if (type == CellType::ENVIRONMENT) {

@@ -18,6 +18,9 @@
 #include <cstdlib>
 #include <exception>
 
+/** 
+ * InvalidCellState exception class
+ */
 class InvalidCellState : public std::exception {
     public:
    const char * what () const throw () {
@@ -25,6 +28,9 @@ class InvalidCellState : public std::exception {
    }
 };
 
+/** 
+ * InvalidCellType exception class
+ */
 class InvalidCellType : public std::exception {
     public:
    const char * what () const throw () {
@@ -32,10 +38,28 @@ class InvalidCellType : public std::exception {
    }
 };
 
-enum CellEnvironmentState{BLANK, TREE_HEALTHY, TREE_DECAY};
-enum CellTermiteState{EMTPY, LOW = 10, MEDIUM = 100, HIGH = 1000};
-enum CellType{ENVIRONMENT, TERMITE};
+/// Enum for environment field cell state.
+enum CellEnvironmentState {
+    BLANK, ///< blank state - 0
+    TREE_HEALTHY, ///< tree is healthy - 1
+    TREE_DECAY ///< tree is in decay - 2
+};
+/// Enum for termite field cell state
+enum CellTermiteState {
+    EMTPY, ///< empty cell - 0
+    LOW = 10, ///< low amount of termites - 10
+    MEDIUM = 100, ///< medium amount of termites - 100 
+    HIGH = 1000 ///< high amount of termites - 1000
+};
+/// Enum for cell field type
+enum CellType {
+    ENVIRONMENT, ///< environment type field
+    TERMITE ///< termite type field
+};
 
+/** 
+ * Class Cell.
+ */
 class Cell {
     protected:
         int state;

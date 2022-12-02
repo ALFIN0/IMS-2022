@@ -17,6 +17,9 @@
 #include <vector>
 #include "cell.h"
 
+/** 
+ * Class Grid.
+ */
 class Grid {
     private:
         CellType cellsType;
@@ -31,5 +34,5 @@ class Grid {
         CellTermiteState getTermiteState(int x, int y);
         void setEnvironmentState(CellEnvironmentState state, int x, int y);
         void setTermiteState(CellTermiteState state, int x, int y);
-        double getTermiteNeighborhood(int x, int y);
+        double getTermiteNeighborhoodValue(int x, int y);
 };
