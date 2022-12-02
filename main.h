@@ -18,6 +18,8 @@
 #include <getopt.h>
 #include <cstdlib>
 #include <string>
+#include "cell.h"
+#include "grid.h"
 
 
 

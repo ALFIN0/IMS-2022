@@ -6,17 +6,17 @@ CPP_FLAGS:=-std=c++11
 
 all: main
 
-main: main.cpp main.h
-	$(CPP) $(CPP_FLAGS) main.cpp -o main
+main: main.cpp main.h cell.cpp cell.h grid.cpp grid.h
+	$(CPP) $(CPP_FLAGS) main.cpp cell.cpp grid.cpp -o main
 
-run:
+run: main
 	./main
 
 pack: clean
-	zip 01_xdvors15_xkrofi00.zip *.h *.cc Makefile *.pdf
+	zip 11_xdvors15_xkrofi00.zip *.h *.cpp Makefile *.pdf
 
 clean:
 	rm -f *.o ./main *.zip
 
 unpack: 
-	unzip 01_xblask02_xcerny63.zip
+	unzip 11_xdvors15_xkrofi00.zip

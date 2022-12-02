@@ -18,5 +18,6 @@
 
 int main(int argc, char** argv)
 {
-    std::cout << "BEGIN OF PROGRAM\n";
+    Grid *grid = new Grid(45, 45);
+    delete grid;
 }
