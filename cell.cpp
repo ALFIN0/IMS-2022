@@ -45,7 +45,12 @@ void Cell::setState(int state)
             throw InvalidCellState();
         }
     } else if (type == CellType::TERMITE) {
-        if (state >= CellTermiteState::EMTPY && state <= CellTermiteState::HIGH) {
+        if (
+            state == CellTermiteState::EMTPY 
+            || state <= CellTermiteState::LOW
+            || state == CellTermiteState::MEDIUM
+            || state == CellTermiteState::HIGH
+        ) {
             this->state = state;
         } else {
             throw InvalidCellState();

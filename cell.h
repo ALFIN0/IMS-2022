@@ -33,7 +33,7 @@ class InvalidCellType : public std::exception {
 };
 
 enum CellEnvironmentState{BLANK, TREE_HEALTHY, TREE_DECAY};
-enum CellTermiteState{EMTPY, LOW, MEDIUM, HIGH};
+enum CellTermiteState{EMTPY, LOW = 10, MEDIUM = 100, HIGH = 1000};
 enum CellType{ENVIRONMENT, TERMITE};
 
 class Cell {
