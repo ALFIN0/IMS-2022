@@ -25,6 +25,7 @@ class Grid {
         CellType cellsType;
         int width;
         int height;
+        double tempCelsius;
         std::vector<std::vector<Cell*>*> *termiteField;
         std::vector<std::vector<Cell*>*> *environmentField;
     public:
@@ -35,4 +36,7 @@ class Grid {
         void setEnvironmentState(CellEnvironmentState state, int x, int y);
         void setTermiteState(CellTermiteState state, int x, int y);
         double getTermiteNeighborhoodValue(int x, int y);
+        void environmentSeeder(int treeDensity);
+        void setTemperatureCelsius(double temp);
+        double setTemperatureCelsius();
 };
