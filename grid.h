@@ -38,5 +38,5 @@ class Grid {
         double getTermiteNeighborhoodValue(int x, int y);
         void environmentSeeder(int treeDensity);
         void setTemperatureCelsius(double temp);
-        double setTemperatureCelsius();
+        double getTemperatureCelsius();
 };
