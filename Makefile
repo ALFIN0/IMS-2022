@@ -10,7 +10,7 @@ main: main.cpp main.h cell.cpp cell.h grid.cpp grid.h
 	$(CPP) $(CPP_FLAGS) main.cpp cell.cpp grid.cpp -o main
 
 run: main
-	./main
+	./main -t 50
 
 pack: clean
 	zip 11_xdvors15_xkrofi00.zip *.h *.cpp Makefile *.pdf
