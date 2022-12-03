@@ -42,7 +42,8 @@ class InvalidCellType : public std::exception {
 enum CellEnvironmentState {
     BLANK, ///< blank state - 0
     TREE_HEALTHY, ///< tree is healthy - 1
-    TREE_DECAY ///< tree is in decay - 2
+    TREE_ATTACKED, ///< tree is attacked - 2
+    TREE_DECAY ///< tree is in decay - 3
 };
 /// Enum for termite field cell state
 enum CellTermiteState {

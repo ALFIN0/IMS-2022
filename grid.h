@@ -13,8 +13,12 @@
  *****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <exception>
 #include <vector>
+#include <ctime>
+#include <math.h>
+#include <set>
 #include "cell.h"
 
 /** 
@@ -25,6 +29,7 @@ class Grid {
         CellType cellsType;
         int width;
         int height;
+        int week;
         double tempCelsius;
         std::vector<std::vector<Cell*>*> *termiteField;
         std::vector<std::vector<Cell*>*> *environmentField;
@@ -35,8 +40,16 @@ class Grid {
         CellTermiteState getTermiteState(int x, int y);
         void setEnvironmentState(CellEnvironmentState state, int x, int y);
         void setTermiteState(CellTermiteState state, int x, int y);
-        double getTermiteNeighborhoodValue(int x, int y);
+        int getWidth();
+        int getHeight();
+        void simulateTermiteNeighborhood(int x, int y);
         void environmentSeeder(int treeDensity);
+        void termiteSeeder(int numberOfColonies = 1, CellTermiteState sizeOfColonies = CellTermiteState::MEDIUM);
         void setTemperatureCelsius(double temp);
         double getTemperatureCelsius();
+        void simulateStep();
+        void printConsoleTrees();
+        void printConsoleTermites();
+        void getStats(std::ostream *stream);
+        void addWeek();
 };
