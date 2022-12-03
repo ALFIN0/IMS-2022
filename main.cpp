@@ -72,10 +72,10 @@ void render()
     float x = -0.7;
     float y = 0.7;
     unsigned char text[128];
-    for(int t = 0; t < Time; t++) {
+    for(int t = 0; t < Time +1; t++) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glColor3f(0.0,0.0,0.5);
-        snprintf((char *)(text), 128, "%ith week", t+1);
+        glColor3f(1.0,1.0,1.0);
+        snprintf((char *)(text), 128, "%ith week", t);
         int w = glutBitmapLength(GLUT_BITMAP_8_BY_13, text);
         int len = strlen((char *)text);
         float textPosition = 0.0 - (float)(w/len)/100.0;
@@ -83,8 +83,9 @@ void render()
         for (int i = 0; i < len; i++) {
             glutBitmapCharacter(GLUT_BITMAP_8_BY_13, text[i]);
         }
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+        for (int i = 0; i < grid->getWidth(); i++) {
+            for (int j = 0; j < grid->getHeight(); j++) {
+
                 //printf("Cell %i and %i adn state %i\n", i, j, grid->getEnvironmentState(i, j));
                 if (grid->getEnvironmentState(i, j) == TREE_HEALTHY)
                     glColor3f(0.0, 0.8, 0.0);
@@ -250,10 +251,12 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
-    glutInitWindowSize(640,640);
+    glutInitWindowSize(600,600);
     glutCreateWindow("Spread of termites in forested areas with impact temperature");
 
+
     glutDisplayFunc(render);
+
     glutMainLoop();
 
     delete grid;
