@@ -166,7 +166,7 @@ void Grid::setTemperatureCelsius(double temp)
 /** 
  * 
  */
-double Grid::setTemperatureCelsius()
+double Grid::getTemperatureCelsius()
 {
     return this->tempCelsius;
 }
