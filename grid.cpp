@@ -131,3 +131,42 @@ double Grid::getTermiteNeighborhoodValue(int x, int y)
     // zlozity vypocet okolia
     return 45 * 0.1 + 17;
 }
+
+/** 
+ * Tree seeder in environment field.
+ * 
+ * @param treeDensity <0 - no trees, 100< - all trees
+ */
+void Grid::environmentSeeder(int treeDensity)
+{
+    if (treeDensity <= 0) 
+        return;
+
+    if (treeDensity >= 100) {
+        for (int i = 0; i < this->environmentField->size(); i++)
+        {
+            for (int j = 0; j < this->environmentField->at(i)->size(); j++)
+            {
+                this->environmentField->at(i)->at(j)->setState(CellEnvironmentState::TREE_HEALTHY);
+            }     
+        }
+    }
+
+    //TODO: other density
+}
+
+/** 
+ * 
+ */
+void Grid::setTemperatureCelsius(double temp)
+{
+    this->tempCelsius = temp;
+}
+
+/** 
+ * 
+ */
+double Grid::getTemperatureCelsius()
+{
+    return this->tempCelsius;
+}
