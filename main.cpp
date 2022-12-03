@@ -66,10 +66,20 @@ void makeStepInSimulation()
 
 
 
+float getInitX()
+{
+    int x = grid->getWidth();
+
+    float res = (float)x ;
+    res = res / 300.0;
+    res = -1.0 + res;
+    printf("Init x: %f\n", res);
+    return res;
+}
 
 void render()
 {
-    float x = -0.7;
+    float x = getInitX();
     float y = 0.7;
     unsigned char text[128];
     for(int t = 0; t < Time +1; t++) {
@@ -90,14 +100,14 @@ void render()
                 if (grid->getEnvironmentState(i, j) == TREE_HEALTHY)
                     glColor3f(0.0, 0.8, 0.0);
                 else if (grid->getTermiteState(i, j) == LOW) {
-                    printf("Low\n");
+                   // printf("Low\n");
                     glColor3f(1.0, 0.5, 0.0);
                 }
                 else if (grid->getTermiteState(i, j) == MEDIUM) {
-                    printf("MEdium\n");
+                    //printf("MEdium\n");
                     glColor3f(0.6, 0.3, 0.0); }
                 else if (grid->getTermiteState(i, j) == HIGH) {
-                    printf("High\n");
+                    //printf("High\n");
                     glColor3f(0.2, 0.1, 0.0); }
                 else if(grid->getEnvironmentState(i, j) == BLANK)
                     continue;
