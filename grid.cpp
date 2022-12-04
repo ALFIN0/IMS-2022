@@ -197,7 +197,7 @@ void Grid::simulateTermiteNeighborhood(int x, int y)
         for (int j = -1; j < 2; j++) {
             int treeState = this->getEnvironmentState(x + i, y + j);
             trees[idx] = (treeState == CellEnvironmentState::BLANK) ? 0 : 6 / treeState;
-            sumTrees += trees[idx];
+            sumTrees += trees[idx]; //treeState == CellEnvironmentState::TREE_DECAY ? 0 : 
             termites[idx] = this->getTermiteState(x + i, y + j);
             if (idx != 4) {
                 sumTermites += termites[idx];
@@ -212,7 +212,7 @@ void Grid::simulateTermiteNeighborhood(int x, int y)
                 continue;
             }
             if (termites[i] == CellTermiteState::MEDIUM) {
-                this->setTermiteState(CellTermiteState::HIGH, x + (i/3) - 1, y + (i%3) - 1);
+                this->setTermiteState(CellTermiteState::MEDIUM, x + (i/3) - 1, y + (i%3) - 1);
                 break;
             }
         }
@@ -224,7 +224,7 @@ void Grid::simulateTermiteNeighborhood(int x, int y)
                 continue;
             }
             if (sumTermites < 500 && termites[i] == CellTermiteState::EMTPY) {
-                this->setTermiteState(CellTermiteState::HIGH, x + (i/3) - 1, y + (i%3) - 1);
+                this->setTermiteState((CellTermiteState)termites[4], x + (i/3) - 1, y + (i%3) - 1);
                 this->setTermiteState(CellTermiteState::EMTPY, x, y);
                 moved = true;
                 break;
