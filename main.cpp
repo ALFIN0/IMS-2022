@@ -155,6 +155,8 @@ void render()
                     glColor3f(0.2, 0.1, 0.0); }
                 else if(grid->getEnvironmentState(i, j) == BLANK)
                     continue;
+                else if (grid->getEnvironmentState(i, j) == TREE_DECAY)
+                    glColor3f(0.0, 0.0, 0.0);
 
                 glBegin(GL_QUADS);
                 glVertex2f(x + i * space, y - j * space);
