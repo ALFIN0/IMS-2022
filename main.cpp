@@ -24,8 +24,11 @@
 // constants
 #define PIXEL_SIZE 0.02
 #define SPACE_BETWEEN 0.03
-#define WIDTH 45
-#define HEIGHT 45
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 1000
+#define SCREEN_POSITION_X 100
+#define SCREEN_POSITION_Y 100
+#define MIN_SCREEN_PADDING 0.05
 
 // global varibles
 Grid *grid = nullptr;
@@ -66,15 +69,15 @@ void makeStepInSimulation()
 
 
 
-float getInitX()
+float getInitX(float size)
 {
-    float res = (float)(grid->getWidth()) * SPACE_BETWEEN / (-2.0);
+    float res = (float)(grid->getWidth()) * size / (-2.0);
     return res;
 }
 
-float getInitY()
+float getInitY(float size)
 {
-    float res = (float)(grid->getHeight()) * SPACE_BETWEEN / (2.0);
+    float res = (float)(grid->getHeight()) * size / (2.0);
     return res;
 }
 
@@ -90,11 +93,32 @@ float getTextPositionY(float posY)
     res += posY;
     return res;
 }
+float getSizeOfCell()
+{
+    float size = PIXEL_SIZE;
+    float x = getInitX(SPACE_BETWEEN);
+    float y = getInitY(SPACE_BETWEEN);
+    if((1.0-abs(x)) < MIN_SCREEN_PADDING)
+    {
+        //resize
+        size = 0.95/((float)(grid->getWidth()));
+        //printf("%f size\n", size);
+    }
+    if((1.0-abs(y)) < MIN_SCREEN_PADDING + 0.1)
+    {
+        float tmp_y = 0.85/((float)(grid->getHeight()));
+        size = tmp_y < size ? tmp_y : size;
+        //printf("%f size\n", size);
+    }
+    return size;
+}
 
 void render()
 {
-    float x = getInitX();
-    float y = getInitY();
+    float size = getSizeOfCell();
+    float space = size + 0.01;
+    float x = getInitX(space);
+    float y = getInitY(space);
     unsigned char text[128];
     for(int t = 0; t < Time +1; t++) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -129,17 +153,17 @@ void render()
                     continue;
 
                 glBegin(GL_QUADS);
-                glVertex2f(x + i * SPACE_BETWEEN, y - j * SPACE_BETWEEN);
-                glVertex2f(x + PIXEL_SIZE + i * SPACE_BETWEEN, y - j * SPACE_BETWEEN);
-                glVertex2f(x + PIXEL_SIZE + i * SPACE_BETWEEN, y - PIXEL_SIZE - j * SPACE_BETWEEN);
-                glVertex2f(x + i * SPACE_BETWEEN, y - PIXEL_SIZE - j * SPACE_BETWEEN);
+                glVertex2f(x + i * space, y - j * space);
+                glVertex2f(x + size + i * space, y - j * space);
+                glVertex2f(x + size + i * space, y - size - j * space);
+                glVertex2f(x + i * space, y - size - j * space);
                 glEnd();
 
             }
         }
 
         glutSwapBuffers();
-        sleep(5);   //TODO change timing
+        sleep(2);   //TODO change timing
         makeStepInSimulation();
     }
 
@@ -147,12 +171,13 @@ void render()
 
 
 
-void setup(int width, int height, int percentage, int coloniesCount, CellTermiteState coloniesSize)
+void setup(int width, int height, int percentage, int coloniesCount, CellTermiteState coloniesSize, int temp)
 {
 
     grid = new Grid(width, height);
     grid->environmentSeeder(percentage);
     grid->termiteSeeder(coloniesCount, coloniesSize);
+    grid->setTemperatureCelsius(temp);
 
     /*grid = new Grid(WIDTH,HEIGHT);
     test setting up for
@@ -214,7 +239,7 @@ int main(int argc, char** argv)
                     std::cerr << "ERR: Wrong parameter of time, -t must be integer > 0\n";
                     exit(EXIT_FAILURE);
                 }
-                time = atoi(optarg);
+                Time = atoi(optarg);
                 break;
             case 'y':
                 if (atoi(optarg) <= 0) {
@@ -271,15 +296,15 @@ int main(int argc, char** argv)
         std::cerr << "ERR: Missing parameter time -t\n";
         exit(EXIT_FAILURE);
     }
-    
-    grid->setTemperatureCelsius(temp);
 
-    setup(width, height, percentage, coloniesCount, coloniesSize);
+    //grid->setTemperatureCelsius(temp);
+
+    setup(width, height, percentage, coloniesCount, coloniesSize, temp);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(100,100);
-    glutInitWindowSize(600,600);
+    glutInitWindowPosition(SCREEN_POSITION_X,SCREEN_POSITION_Y);
+    glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
     glutCreateWindow("Spread of termites in forested areas with impact temperature");
 
 
