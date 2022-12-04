@@ -2,7 +2,7 @@
 # Autori: Patrik Dvorscak (xdvor15), Lada Krofingerova (xkrofi00)
 
 CPP:=g++
-CPP_FLAGS:=-std=c++11
+CPP_FLAGS:=-std=c++11 -lGLU -lGL -lglut
 
 all: main
 

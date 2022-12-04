@@ -16,6 +16,182 @@
 #include <iostream>
 #include <string.h>
 #include <fstream>
+#include <stdio.h>
+#include <unistd.h>
+
+#include <GL/glut.h>
+
+// constants
+#define PIXEL_SIZE 0.02
+#define SPACE_BETWEEN 0.03
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 1000
+#define SCREEN_POSITION_X 100
+#define SCREEN_POSITION_Y 100
+#define MIN_SCREEN_PADDING 0.05
+
+// global varibles
+Grid *grid = nullptr;
+int Time;
+int temp = 20;
+std::ofstream outStats;
+
+void makeStepInSimulation()
+{
+    grid->addWeek();
+
+    if (temp < 10) {
+        grid->simulateStep();
+    } else if (temp >= 10 && temp < 17) {
+        for (int i = 0; i < 2; i++)
+            grid->simulateStep();
+    } else if (temp >= 17 && temp < 23) {
+        for (int i = 0; i < 3; i++)
+            grid->simulateStep();
+    } else if (temp >= 23 && temp < 28) {
+        for (int i = 0; i < 4; i++)
+            grid->simulateStep();
+    } else {
+        for (int i = 0; i < 5; i++)
+            grid->simulateStep();
+    }
+
+    // VIEW STATE AFTER 1 WEEK
+    if (outStats.is_open()) {
+        grid->getStats(&outStats);
+    }  else {
+        grid->getStats(&std::cout);
+    }
+
+
+}
+
+
+
+
+float getInitX(float size)
+{
+    float res = (float)(grid->getWidth()) * size / (-2.0);
+    return res;
+}
+
+float getInitY(float size)
+{
+    float res = (float)(grid->getHeight()) * size / (2.0);
+    return res;
+}
+
+float getTextPositionX(int w, int len)
+{
+    float res = 0.0 - (float)(w / len) / 100.0;
+    return res;
+}
+
+float getTextPositionY(float posY)
+{
+    float res = (1.0 - posY) / 2.0;
+    res += posY;
+    return res;
+}
+float getSizeOfCell()
+{
+    float size = PIXEL_SIZE;
+    float x = getInitX(SPACE_BETWEEN);
+    float y = getInitY(SPACE_BETWEEN);
+    if((1.0-abs(x)) < MIN_SCREEN_PADDING)
+    {
+        //resize
+        size = 0.95/((float)(grid->getWidth()));
+        //printf("%f size\n", size);
+    }
+    if((1.0-abs(y)) < MIN_SCREEN_PADDING + 0.1)
+    {
+        float tmp_y = 0.85/((float)(grid->getHeight()));
+        size = tmp_y < size ? tmp_y : size;
+        //printf("%f size\n", size);
+    }
+    return size;
+}
+
+void render()
+{
+    float size = getSizeOfCell();
+    float space = size + 0.01;
+    float x = getInitX(space);
+    float y = getInitY(space);
+    unsigned char text[128];
+    for(int t = 0; t < Time +1; t++) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glColor3f(1.0,1.0,1.0);
+        snprintf((char *)(text), 128, "%ith week", t);
+        int w = glutBitmapLength(GLUT_BITMAP_8_BY_13, text);
+        int len = strlen((char *)text);
+        float textPositionX = getTextPositionX(w, len);
+        float textPositionY = getTextPositionY(y);
+
+        glRasterPos2f(textPositionX, textPositionY);
+        for (int i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_8_BY_13, text[i]);
+        }
+        for (int i = 0; i < grid->getWidth(); i++) {
+            for (int j = 0; j < grid->getHeight(); j++) {
+
+                //printf("Cell %i and %i adn state %i\n", i, j, grid->getEnvironmentState(i, j));
+                if (grid->getEnvironmentState(i, j) == TREE_HEALTHY)
+                    glColor3f(0.0, 0.8, 0.0);
+                else if (grid->getTermiteState(i, j) == LOW) {
+                   // printf("Low\n");
+                    glColor3f(1.0, 0.5, 0.0);
+                }
+                else if (grid->getTermiteState(i, j) == MEDIUM) {
+                    //printf("MEdium\n");
+                    glColor3f(0.6, 0.3, 0.0); }
+                else if (grid->getTermiteState(i, j) == HIGH) {
+                    //printf("High\n");
+                    glColor3f(0.2, 0.1, 0.0); }
+                else if(grid->getEnvironmentState(i, j) == BLANK)
+                    continue;
+
+                glBegin(GL_QUADS);
+                glVertex2f(x + i * space, y - j * space);
+                glVertex2f(x + size + i * space, y - j * space);
+                glVertex2f(x + size + i * space, y - size - j * space);
+                glVertex2f(x + i * space, y - size - j * space);
+                glEnd();
+
+            }
+        }
+
+        glutSwapBuffers();
+        sleep(2);   //TODO change timing
+        makeStepInSimulation();
+    }
+
+}
+
+
+
+void setup(int width, int height, int percentage, int coloniesCount, CellTermiteState coloniesSize, int temp)
+{
+
+    grid = new Grid(width, height);
+    grid->environmentSeeder(percentage);
+    grid->termiteSeeder(coloniesCount, coloniesSize);
+    grid->setTemperatureCelsius(temp);
+
+    /*grid = new Grid(WIDTH,HEIGHT);
+    test setting up for
+    grid->environmentSeeder(150);
+    grid->setEnvironmentState(BLANK, 10,10);
+    grid->setTermiteState(LOW, 11,10);
+    grid->setEnvironmentState(TREE_DECAY, 11,10);
+    grid->setTermiteState(MEDIUM, 12,10);
+    grid->setEnvironmentState(TREE_DECAY, 12,10);
+    grid->setTermiteState(HIGH, 13,10);
+    grid->setEnvironmentState(TREE_DECAY, 13,10);
+    Time = 2;
+*/
+}
 
 void printHelp()
 {
@@ -40,12 +216,12 @@ int main(int argc, char** argv)
     int c;
     int height = 400;
     int width = 400;
-    int temp = 20;
+   // int temp = 20;
     int percentage = 50;
     int coloniesCount = 2;
-    int time = 0;
+    // int time = 0;
     CellTermiteState coloniesSize = CellTermiteState::MEDIUM;
-    std::ofstream outStats;
+//    std::ofstream outStats;
 
     while((c = getopt(argc, argv, "x:t:y:T:p:n:s:f:h")) != -1)
     {
@@ -63,7 +239,7 @@ int main(int argc, char** argv)
                     std::cerr << "ERR: Wrong parameter of time, -t must be integer > 0\n";
                     exit(EXIT_FAILURE);
                 }
-                time = atoi(optarg);
+                Time = atoi(optarg);
                 break;
             case 'y':
                 if (atoi(optarg) <= 0) {
@@ -116,50 +292,25 @@ int main(int argc, char** argv)
                 break;
         }
     }
-    if (!time) {
+    if (!Time) {
         std::cerr << "ERR: Missing parameter time -t\n";
         exit(EXIT_FAILURE);
     }
-    
-    Grid *grid = new Grid(width, height);
-    grid->environmentSeeder(percentage);
-    grid->termiteSeeder(coloniesCount, coloniesSize);
-    grid->setTemperatureCelsius(temp);
 
-    for (int i = 0; i < time; i++)
-    {
-        grid->addWeek();
+    //grid->setTemperatureCelsius(temp);
 
-        if (temp < 10) {
-            grid->simulateStep();
-        } else if (temp >= 10 && temp < 17) {
-            for (int i = 0; i < 2; i++)
-                grid->simulateStep();
-        } else if (temp >= 17 && temp < 23) {
-            for (int i = 0; i < 3; i++)
-                grid->simulateStep();
-        } else if (temp >= 23 && temp < 28) {
-            for (int i = 0; i < 4; i++)
-                grid->simulateStep();
-        } else {
-            for (int i = 0; i < 5; i++)
-                grid->simulateStep();
-        }
+    setup(width, height, percentage, coloniesCount, coloniesSize, temp);
 
-        // VIEW STATE AFTER 1 WEEK  
-        if (outStats.is_open()) {  
-            grid->getStats(&outStats);
-        }  else {
-            grid->getStats(&std::cout);
-        }
-        
-        
-    }
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowPosition(SCREEN_POSITION_X,SCREEN_POSITION_Y);
+    glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+    glutCreateWindow("Spread of termites in forested areas with impact temperature");
 
-    // std::ofstream outCsv("out.csv", std::ios::out | std::ios::app);
-    // grid->getStats(&outCsv);
-    // outCsv.close();
-    
+
+    glutDisplayFunc(render);
+
+    glutMainLoop();
 
     if (outStats.is_open()) {
         outStats.close();
