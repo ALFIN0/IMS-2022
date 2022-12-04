@@ -20,6 +20,7 @@
 #include <unistd.h>
 
 #include <GL/glut.h>
+#include <GL/gl.h>
 
 // constants
 #define PIXEL_SIZE 0.02
@@ -34,7 +35,7 @@
 Grid *grid = nullptr;
 int Time;
 int temp = 20;
-std::ofstream outStats;
+std::ofstream outWeekStats;
 
 void makeStepInSimulation()
 {
@@ -42,25 +43,28 @@ void makeStepInSimulation()
 
     if (temp < 10) {
         grid->simulateStep();
-    } else if (temp >= 10 && temp < 17) {
+    } else if (temp >= 10 && temp < 15) {
         for (int i = 0; i < 2; i++)
             grid->simulateStep();
-    } else if (temp >= 17 && temp < 23) {
+    } else if (temp >= 15 && temp < 20) {
         for (int i = 0; i < 3; i++)
             grid->simulateStep();
-    } else if (temp >= 23 && temp < 28) {
+    } else if (temp >= 20 && temp < 24) {
         for (int i = 0; i < 4; i++)
             grid->simulateStep();
-    } else {
+    } else if (temp >= 24 && temp < 28) {
         for (int i = 0; i < 5; i++)
+            grid->simulateStep();
+    } else {
+        for (int i = 0; i < 6; i++)
             grid->simulateStep();
     }
 
     // VIEW STATE AFTER 1 WEEK
-    if (outStats.is_open()) {
-        grid->getStats(&outStats);
+    if (outWeekStats.is_open()) {
+        grid->writeWeekStats(&outWeekStats);
     }  else {
-        grid->getStats(&std::cout);
+        grid->writeWeekStats(&std::cout);
     }
 
 
@@ -208,6 +212,7 @@ void printHelp()
     std::cout << "    -n X: number of termite colonies, default 2\n";
     std::cout << "    -s X: size of termite colonies, default 2, options [1,2,3] - 1 is smallest\n";
     std::cout << "    -f X: statistics file, default standard output\n";
+    std::cout << "    -S X: statistics mode, when using this parameter graphical window will be disabled and result statistics will be appended to given file\n";
     std::cout << "    -h: print help\n";
 }
 
@@ -216,14 +221,12 @@ int main(int argc, char** argv)
     int c;
     int height = 400;
     int width = 400;
-   // int temp = 20;
     int percentage = 50;
     int coloniesCount = 2;
-    // int time = 0;
     CellTermiteState coloniesSize = CellTermiteState::MEDIUM;
-//    std::ofstream outStats;
+    std::ofstream outProgramStats;
 
-    while((c = getopt(argc, argv, "x:t:y:T:p:n:s:f:h")) != -1)
+    while((c = getopt(argc, argv, "x:t:y:T:p:n:s:f:S:h")) != -1)
     {
         switch(c)
         {
@@ -283,7 +286,14 @@ int main(int argc, char** argv)
                 }
                 break;
             case 'f':
-                outStats.open(optarg, std::ios::out | std::ios::app);
+                outWeekStats.open(optarg, std::ios::out);
+                break;
+            case 'S':
+                outProgramStats.open(optarg, std::ios::out | std::ios::app);
+                if (!outProgramStats.is_open()) {
+                    std::cerr << "ERR: Cannot open file \"" << optarg << "\", for parameter -S\n";
+                    exit(EXIT_FAILURE);
+                }
                 break;
             case 'h':
                 printHelp();
@@ -297,23 +307,30 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    //grid->setTemperatureCelsius(temp);
-
     setup(width, height, percentage, coloniesCount, coloniesSize, temp);
+    if (outProgramStats.is_open()) {
+        for (int i = 0; i < Time; i++) {
+            makeStepInSimulation();   
+        }
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(SCREEN_POSITION_X,SCREEN_POSITION_Y);
-    glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
-    glutCreateWindow("Spread of termites in forested areas with impact temperature");
+        grid->writeProgramStats(&outProgramStats);
+        outProgramStats.close();
+    } else {
+        glutInit(&argc, argv);
+        glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+        glutInitWindowPosition(SCREEN_POSITION_X,SCREEN_POSITION_Y);
+        glutInitWindowSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        glutCreateWindow("Spread of termites in forested areas with impact temperature");
 
 
-    glutDisplayFunc(render);
+        glutDisplayFunc(render);
 
-    glutMainLoop();
+        glutMainLoop();
+    }
+    
 
-    if (outStats.is_open()) {
-        outStats.close();
+    if (outWeekStats.is_open()) {
+        outWeekStats.close();
     }
 
     delete grid;
