@@ -68,19 +68,33 @@ void makeStepInSimulation()
 
 float getInitX()
 {
-    int x = grid->getWidth();
+    float res = (float)(grid->getWidth()) * SPACE_BETWEEN / (-2.0);
+    return res;
+}
 
-    float res = (float)x ;
-    res = res / 300.0;
-    res = -1.0 + res;
-    printf("Init x: %f\n", res);
+float getInitY()
+{
+    float res = (float)(grid->getHeight()) * SPACE_BETWEEN / (2.0);
+    return res;
+}
+
+float getTextPositionX(int w, int len)
+{
+    float res = 0.0 - (float)(w / len) / 100.0;
+    return res;
+}
+
+float getTextPositionY(float posY)
+{
+    float res = (1.0 - posY) / 2.0;
+    res += posY;
     return res;
 }
 
 void render()
 {
     float x = getInitX();
-    float y = 0.7;
+    float y = getInitY();
     unsigned char text[128];
     for(int t = 0; t < Time +1; t++) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -88,8 +102,10 @@ void render()
         snprintf((char *)(text), 128, "%ith week", t);
         int w = glutBitmapLength(GLUT_BITMAP_8_BY_13, text);
         int len = strlen((char *)text);
-        float textPosition = 0.0 - (float)(w/len)/100.0;
-        glRasterPos2f(textPosition, 0.75);
+        float textPositionX = getTextPositionX(w, len);
+        float textPositionY = getTextPositionY(y);
+
+        glRasterPos2f(textPositionX, textPositionY);
         for (int i = 0; i < len; i++) {
             glutBitmapCharacter(GLUT_BITMAP_8_BY_13, text[i]);
         }
