@@ -481,6 +481,11 @@ void Grid::printConsoleTermites()
     std::cout << count << " " << this->getHeight() * this->getWidth() <<"\n";
 }
 
+/**
+ * Print stats to file or standard output.
+ * 
+ * @param std::ostream *stream
+ */
 void Grid::getStats(std::ostream *stream)
 {
     int countLOW = 0;
@@ -521,6 +526,10 @@ void Grid::getStats(std::ostream *stream)
         }   
     }
 
+    // *stream << this->week << ";" << countLOW << ";" << countMED << ";" << countHIGH 
+    // << ";" << countHea << ";" << countAtt << ";" << countDec << ";" 
+    // << this->environmentField->size() * this->environmentField->at(0)->size() << ";"
+    // << this->tempCelsius << "\n";
     *stream << "WEEK " << this->week << "\n";
     *stream << "Termite colonies :\n";
     *stream << "  Small populations : " << countLOW << "\n";
@@ -532,11 +541,24 @@ void Grid::getStats(std::ostream *stream)
     *stream << "  Attacked : " << countAtt << " -> "
     << countAtt/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0  << "%\n";
     *stream << "  In decay : " << countDec << " -> " 
-    << countDec/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0  << "%\n";
+    << countDec/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0  << "%\n\n";
 
 }
 
+/** 
+ * Add one week
+ */
 void Grid::addWeek()
 {
     this->week++;
+}
+
+/** 
+ * Get current week
+ * 
+ * @return int
+ */
+int Grid::getWeek()
+{
+    return this->week;
 }

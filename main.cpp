@@ -91,7 +91,7 @@ int main(int argc, char** argv)
                     std::cerr << "ERR: Wrong parameter of colonies count, -n must be integer > 0\n";
                     exit(EXIT_FAILURE);
                 }
-                temp = atoi(optarg);
+                coloniesCount = atoi(optarg);
                 break;
             case 's':
                 if (strcmp(optarg, "1") && strcmp(optarg, "2") && strcmp(optarg, "3")) {
@@ -124,6 +124,7 @@ int main(int argc, char** argv)
     Grid *grid = new Grid(width, height);
     grid->environmentSeeder(percentage);
     grid->termiteSeeder(coloniesCount, coloniesSize);
+    grid->setTemperatureCelsius(temp);
 
     for (int i = 0; i < time; i++)
     {
@@ -154,7 +155,15 @@ int main(int argc, char** argv)
         
         
     }
+
+    // std::ofstream outCsv("out.csv", std::ios::out | std::ios::app);
+    // grid->getStats(&outCsv);
+    // outCsv.close();
     
+
+    if (outStats.is_open()) {
+        outStats.close();
+    }
 
     delete grid;
     exit(EXIT_SUCCESS);
