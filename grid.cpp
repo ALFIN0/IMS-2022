@@ -22,6 +22,7 @@
  */
 Grid::Grid(int width, int height)
 {
+    this->numberOfColonies = 1;
     int count = 0;
     this->width = width;
     this->height = height;
@@ -355,6 +356,7 @@ void Grid::environmentSeeder(int treeDensity)
  */
 void Grid::termiteSeeder(int numberOfColonies /*=1*/, CellTermiteState sizeOfColonies /*=CellTermiteState::MEDIUM*/)
 {
+    this->numberOfColonies = numberOfColonies;
     if (numberOfColonies <= 0) {
         return;
     }
@@ -380,7 +382,9 @@ void Grid::termiteSeeder(int numberOfColonies /*=1*/, CellTermiteState sizeOfCol
 }
 
 /** 
+ * Set temperature.
  * 
+ * @param double temp
  */
 void Grid::setTemperatureCelsius(double temp)
 {
@@ -388,7 +392,9 @@ void Grid::setTemperatureCelsius(double temp)
 }
 
 /** 
+ * Get temperature.
  * 
+ * @return double
  */
 double Grid::getTemperatureCelsius()
 {
@@ -423,6 +429,9 @@ void Grid::simulateStep()
     }
 }
 
+/** 
+ * Helper function for print environment field state.
+ */
 void Grid::printConsoleTrees()
 {
     int count = 0;
@@ -455,6 +464,9 @@ void Grid::printConsoleTrees()
     << "\% ATTACK: " << countAtt/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0 <<"\%\n";
 }
 
+/** 
+ * Helper function for print termite field state.
+ */
 void Grid::printConsoleTermites()
 {
     int count = 0;
@@ -482,11 +494,11 @@ void Grid::printConsoleTermites()
 }
 
 /**
- * Print stats to file or standard output.
+ * Print end stats to file or standard output.
  * 
  * @param std::ostream *stream
  */
-void Grid::getStats(std::ostream *stream)
+void Grid::writeProgramStats(std::ostream *stream)
 {
     int countLOW = 0;
     int countMED = 0;
@@ -526,10 +538,57 @@ void Grid::getStats(std::ostream *stream)
         }   
     }
 
-    // *stream << this->week << ";" << countLOW << ";" << countMED << ";" << countHIGH 
-    // << ";" << countHea << ";" << countAtt << ";" << countDec << ";" 
-    // << this->environmentField->size() * this->environmentField->at(0)->size() << ";"
-    // << this->tempCelsius << "\n";
+    *stream << this->week << ";" << countLOW << ";" << countMED << ";" << countHIGH 
+    << ";" << countHea << ";" << countAtt << ";" << countDec << ";" 
+    << this->environmentField->size() * this->environmentField->at(0)->size() << ";"
+    << this->tempCelsius << ";" << this->numberOfColonies << "\n";
+}
+
+/**
+ * Print weekly stats to file.
+ * 
+ * @param std::ostream *stream
+ */
+void Grid::writeWeekStats(std::ostream *stream)
+{
+    int countLOW = 0;
+    int countMED = 0;
+    int countHIGH = 0;
+    for (int i = 0; i < this->termiteField->size(); i++)
+    {
+        for (int j = 0; j < this->termiteField->at(i)->size(); j++)
+        {
+            if (this->termiteField->at(i)->at(j)->getState() == CellTermiteState::LOW) {
+                countLOW++;
+            } else if (this->termiteField->at(i)->at(j)->getState() == CellTermiteState::MEDIUM) {
+                countMED++;
+            } else if (this->termiteField->at(i)->at(j)->getState() == CellTermiteState::HIGH) {
+                countHIGH++;
+            }
+            
+        }   
+    }
+
+    int countHea = 0;
+    int countDec = 0;
+    int countAtt = 0;
+    for (int i = 0; i < this->environmentField->size(); i++)
+    {
+        for (int j = 0; j < this->environmentField->at(i)->size(); j++)
+        {
+            if (this->environmentField->at(i)->at(j)->getState() == CellEnvironmentState::TREE_HEALTHY) {
+                countHea++;
+            } else if (this->environmentField->at(i)->at(j)->getState() == CellEnvironmentState::TREE_ATTACKED) {
+                countAtt++;
+            } 
+            else if (this->environmentField->at(i)->at(j)->getState() == CellEnvironmentState::TREE_DECAY) {
+                countDec++;
+            }
+                
+            
+        }   
+    }
+
     *stream << "WEEK " << this->week << "\n";
     *stream << "Termite colonies :\n";
     *stream << "  Small populations : " << countLOW << "\n";
@@ -542,7 +601,6 @@ void Grid::getStats(std::ostream *stream)
     << countAtt/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0  << "%\n";
     *stream << "  In decay : " << countDec << " -> " 
     << countDec/double(this->environmentField->size() * this->environmentField->at(0)->size()) * 100.0  << "%\n\n";
-
 }
 
 /** 

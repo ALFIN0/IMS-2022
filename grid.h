@@ -26,6 +26,7 @@
  */
 class Grid {
     private:
+        int numberOfColonies;
         CellType cellsType;
         int width;
         int height;
@@ -50,7 +51,8 @@ class Grid {
         void simulateStep();
         void printConsoleTrees();
         void printConsoleTermites();
-        void getStats(std::ostream *stream);
+        void writeProgramStats(std::ostream *stream);
+        void writeWeekStats(std::ostream *stream);
         void addWeek();
         int getWeek();
 };
