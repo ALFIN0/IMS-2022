@@ -10,13 +10,14 @@ main: main.cpp main.h cell.cpp cell.h grid.cpp grid.h
 	$(CPP) $(CPP_FLAGS) main.cpp cell.cpp grid.cpp -o main
 
 run: main
-	./main -t 50
+	mkdir stats
+	./main -t 50 -f stats/file.txt
 
 pack: clean
 	zip 11_xdvors15_xkrofi00.zip *.h *.cpp Makefile *.pdf
 
 clean:
-	rm -f *.o ./main *.zip
+	rm -f *.o ./main *.zip stats
 
 unpack: 
 	unzip 11_xdvors15_xkrofi00.zip

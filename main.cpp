@@ -214,7 +214,7 @@ int main(int argc, char** argv)
                     std::cerr << "ERR: Wrong parameter of time, -t must be integer > 0\n";
                     exit(EXIT_FAILURE);
                 }
-                Time = atoi(optarg);
+                time = atoi(optarg);
                 break;
             case 'y':
                 if (atoi(optarg) <= 0) {
@@ -242,7 +242,7 @@ int main(int argc, char** argv)
                     std::cerr << "ERR: Wrong parameter of colonies count, -n must be integer > 0\n";
                     exit(EXIT_FAILURE);
                 }
-                temp = atoi(optarg);
+                coloniesCount = atoi(optarg);
                 break;
             case 's':
                 if (strcmp(optarg, "1") && strcmp(optarg, "2") && strcmp(optarg, "3")) {
@@ -271,6 +271,8 @@ int main(int argc, char** argv)
         std::cerr << "ERR: Missing parameter time -t\n";
         exit(EXIT_FAILURE);
     }
+    
+    grid->setTemperatureCelsius(temp);
 
     setup(width, height, percentage, coloniesCount, coloniesSize);
 
@@ -284,6 +286,10 @@ int main(int argc, char** argv)
     glutDisplayFunc(render);
 
     glutMainLoop();
+
+    if (outStats.is_open()) {
+        outStats.close();
+    }
 
     delete grid;
     exit(EXIT_SUCCESS);

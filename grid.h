@@ -52,4 +52,5 @@ class Grid {
         void printConsoleTermites();
         void getStats(std::ostream *stream);
         void addWeek();
+        int getWeek();
 };
