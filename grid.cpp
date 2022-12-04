@@ -197,7 +197,7 @@ void Grid::simulateTermiteNeighborhood(int x, int y)
         for (int j = -1; j < 2; j++) {
             int treeState = this->getEnvironmentState(x + i, y + j);
             trees[idx] = (treeState == CellEnvironmentState::BLANK) ? 0 : 6 / treeState;
-            sumTrees += trees[idx]; //treeState == CellEnvironmentState::TREE_DECAY ? 0 : 
+            sumTrees += treeState == CellEnvironmentState::TREE_DECAY ? 0 : trees[idx];
             termites[idx] = this->getTermiteState(x + i, y + j);
             if (idx != 4) {
                 sumTermites += termites[idx];
