@@ -27,7 +27,7 @@ run-complex-stats: main script.sh
 	sh script.sh
 
 pack: clean
-	zip 11_xdvors15_xkrofi00.zip *.h *.cpp Makefile *.pdf
+	zip 11_xdvors15_xkrofi00.zip *.h *.cpp Makefile *.pdf *.sh simulation-files/*
 
 clean:
 	rm -rf *.o ./main *.zip stats

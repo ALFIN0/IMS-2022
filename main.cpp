@@ -169,7 +169,7 @@ void render()
         }
 
         glutSwapBuffers();
-        sleep(2);   //TODO change timing
+        sleep(2); 
         makeStepInSimulation();
     }
 
@@ -184,19 +184,6 @@ void setup(int width, int height, int percentage, int coloniesCount, CellTermite
     grid->environmentSeeder(percentage);
     grid->termiteSeeder(coloniesCount, coloniesSize);
     grid->setTemperatureCelsius(temp);
-
-    /*grid = new Grid(WIDTH,HEIGHT);
-    test setting up for
-    grid->environmentSeeder(150);
-    grid->setEnvironmentState(BLANK, 10,10);
-    grid->setTermiteState(LOW, 11,10);
-    grid->setEnvironmentState(TREE_DECAY, 11,10);
-    grid->setTermiteState(MEDIUM, 12,10);
-    grid->setEnvironmentState(TREE_DECAY, 12,10);
-    grid->setTermiteState(HIGH, 13,10);
-    grid->setEnvironmentState(TREE_DECAY, 13,10);
-    Time = 2;
-*/
 }
 
 void printHelp()
